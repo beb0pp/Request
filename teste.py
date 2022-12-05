@@ -61,55 +61,13 @@ for uf in SelectUF:
 
 agendamento = driver.find_element(By.XPATH, '//*[@id="appointments_consulate_appointment_date"]').click()
 
+disponivel = None
+while disponivel == None:
+    disponivel = pt.locateOnScreen('C:\\Users\\labreu\\Desktop\\dataDisponivel.png', confidence=0.8)
+    driver.find_element(By.XPATH, '/html/body/div[5]/div[2]/div/a/span').click()
+    driver.find_element(By.XPATH, '/html/body/div[5]/div[2]/table/thead/tr/th[1]').click()
+    time.sleep(2)
 
 mesTabela = meses[driver.find_element(By.XPATH, '/html/body/div[5]/div[1]/div/div/span[1]').text]
 anoTabela = int(driver.find_element(By.XPATH, '/html/body/div[5]/div[1]/div/div/span[2]').text)
 print('Ve mes e ano Tabela 1')
-
-if (mesTabela <= dataMaxima.month and anoTabela == dataMaxima.year) or (anoTabela < dataMaxima.year):
-    print('Procura dias Tabela 1')
-    div1 = driver.find_element(By.XPATH, '/html/body/div[5]/div[1]')
-    a = div1.find_elements(By.CSS_SELECTOR, 'a.ui-state-default')
-    if len(a) == 0:
-                                    ## INICIO DO LOOP ##
-        while True:
-            print('Ve mes e ano Tabela 2')
-
-            mesTabela = meses[driver.find_element(By.XPATH, '/html/body/div[5]/div[2]/div/div/span[1]').text]
-            anoTabela = int(driver.find_element(By.XPATH, '/html/body/div[5]/div[2]/div/div/span[2]').text)
-
-            if (mesTabela <= dataMaxima.month and anoTabela == dataMaxima.year) or (anoTabela < dataMaxima.year):
-                print('Procura dias Tabela 2')
-                div2= driver.find_element(By.XPATH, '/html/body/div[5]/div[2]')
-                a = div2.find_elements(By.CSS_SELECTOR, 'a.ui-state-default')
-                
-                if len(a) == 0:
-                    print('Não foi possivel encontrar um agendamento com a data limite solicitada')
-                    driver.find_element(By.XPATH, '//*[@id="ui-datepicker-div"]/div[2]/div/a').click()
-                    continue
-                else:
-                    for dia in a:
-                        if (int(dia.text) <= dataMaxima.day and mesTabela == dataMaxima.month) or (mesTabela < dataMaxima.month):
-                            print(f'ACHEI A DATA {dia.text}/{mesTabela}/{anoTabela}')
-            else:
-                print('Não foi possivel encontrar um agendamento com a data limite solicitada')
-            break
-    else:
-        for dia in a:
-            if (int(dia.text) <= dataMaxima.day and mesTabela >= dataMaxima.month) or (mesTabela < dataMaxima.month):
-                print(f'ACHEI A DATA {dia.text}/{mesTabela}/{anoTabela}')
-else:
-    print('Não foi possivel encontrar um agendamento com a data limite solicitada')
-
-
-
-
-# try:
-#     horDisponiveis = driver.find_element(By.XPATH, '/html/body/div[4]/main/div[4]/div/div/form/fieldset[1]/ol/fieldset/div/div[2]/div[3]/li[2]/select').click()
-#     horDisponiveis = driver.find_elements(By.CSS_SELECTOR, '#appointments_consulate_appointment_time > *')
-#     for horas in horDisponiveis:
-#         tempo = horas.text
-#         print(tempo)
-#     if tempo == horario:
-#         horas.click()
-# except:
