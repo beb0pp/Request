@@ -39,7 +39,7 @@ driver.find_element(By.XPATH, '//*[@id="sign_in_form"]/div[3]/label/div').click(
 driver.find_element(By.XPATH, '//*[@id="sign_in_form"]/p[1]/input').click()
 time.sleep(6)
 
-driver.find_element(By.XPATH, '/html/body/div[4]/main/div[2]/div[3]/div[1]/div/div[1]/div[1]/div[2]/ul/li/a').click()
+driver.find_element(By.XPATH, '/html/body/div[4]/main/div[2]/div[3]/div[1]/div/div[2]/div[1]/div[2]/ul/li/a').click()
 
 
 driver.find_element(By.XPATH, '/html/body/div[4]/main/div[2]/div[2]/div/section/ul/li[4]/a').click()
@@ -84,24 +84,32 @@ if len(a) == 0:
 else:
     a[0].click()
     print(f'ACHEI A DATA {a[0].text}/{mesTabela}/{anoTabela}')
+    data = driver.find_element(By.XPATH, '//*[@id="appointments_consulate_appointment_date"]').get_attribute('value')
+    try:
+        print('Encontrando o primeiro horario')
+        horDisponiveis = driver.find_element(By.XPATH, '/html/body/div[4]/main/div[4]/div/div/form/fieldset[1]/ol/fieldset/div/div[2]/div[3]/li[2]/select').click()
+        FirstHour = driver.find_element(By.XPATH, '//*[@id="appointments_consulate_appointment_time"]/option[2]').click()
+        HoursText = driver.find_element(By.XPATH, '//*[@id="appointments_consulate_appointment_time"]/option[2]').get_attribute('text')
+        print(f'Horario encontrado, sua seção sera agendada para o horario {HoursText}')
+    except:
+        print('Não foi possivel encontrar um primeiro horario')
+        
+    outlook = win32com.client.Dispatch('outlook.application')
+    mail = outlook.CreateItem(0)
+    mail.To = "luis.abreu@ativainvestimentos.com.br; marcus.romao@ativainvestimentos.com.br; henrique.barbosa@ativainvestimentos.com.br"
+    mail.Subject = 'Plano Bronze'
+    mail.GetInspector
+    # Attachments = r'Q:\Risco\Novo Risco\1 - Rotinas\Middle\Preços\filtroRemuneracao.xlsx'
+    # mail.Attachments.Add(Attachments)
+    # pathToIMage = 'Q://Risco/Novo Risco/pythonrisco/Codigos/data/CM_teste/Assinatura_Risco.png'
+    # attachment = mail.Attachments.Add(pathToIMage)
+    # attachment.PropertyAccessor.SetProperty("http://schemas.microsoft.com/mapi/proptag/0x3712001F", "MyId1")
+    mail.HTMLBody = "<p>  Boa tarde! <p>" \
+                    '<p> Identificamos uma data para o seu agendamento <p>' \
+                f"<p> No estado {distrito}, na data {data} e no horario das {HoursText} <p>" \
 
-try:
-    print('Encontrando o primeiro horario')
-    horDisponiveis = driver.find_element(By.XPATH, '/html/body/div[4]/main/div[4]/div/div/form/fieldset[1]/ol/fieldset/div/div[2]/div[3]/li[2]/select').click()
-    FirstHour = driver.find_element(By.XPATH, '//*[@id="appointments_consulate_appointment_time"]/option[2]').click()
-    HoursText = driver.find_element(By.XPATH, '//*[@id="appointments_consulate_appointment_time"]/option[2]').get_attribute('text')
-    print(f'Horario encontrado, sua seção sera agendada para o horario {HoursText}')
-except:
-    print('Não foi possivel encontrar um primeiro horario')
-
-  
-# try:
-#     horDisponiveis = driver.find_element(By.XPATH, '/html/body/div[4]/main/div[4]/div/div/form/fieldset[1]/ol/fieldset/div/div[2]/div[3]/li[2]/select').click()
-#     horDisponiveis = driver.find_elements(By.CSS_SELECTOR, '#appointments_consulate_appointment_time > *')
-#     for horas in horDisponiveis:
-#         tempo = horas.text
-#         print(tempo)
-#     if tempo == horario:
-#         horas.click()
-# except:
+    '<p><p>' \
+    '<p> <figure><img src="cid:MyId1"</figure>'
+    mail.display()
+    # mail.Send()
     
