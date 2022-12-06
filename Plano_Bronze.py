@@ -11,17 +11,13 @@ import time
 import os
 import pyautogui as pt
 
-date_now = datetime.now()
-diaanterior = date_now - timedelta(1)
-diaanterior = diaanterior.strftime('%d/%m/%Y')
-
 meses = {'January' : 1, 'February' : 2, 'March' : 3, 'April' : 4, 'May' : 5, 'June' : 6, 'July' : 7, 'August' : 8, 'September' : 9, 'October' : 10, 'November' : 11, 'December' : 12}
 
-dataMaxima = datetime.strptime(input('Insira uma data:  (formato: yyyy/mm/dd)'), '%Y-%m-%d')
+# dataMaxima = datetime.strptime(input('Insira uma data:  (formato: yyyy/mm/dd)'), '%Y-%m-%d')
 estado = input('Selecione o Estado que gostaria de realizar a consulta de data: ')
-hora, minutos = input('Selecione o horario que gostaria: ').split(':')
-hora = int(hora)
-minutos = int(minutos)
+# hora, minutos = input('Selecione o horario que gostaria: ').split(':')
+# hora = int(hora)
+# minutos = int(minutos)
 
 chrome_options = Options()
 # chrome_options.add_argument('--headless')
@@ -61,13 +57,51 @@ for uf in SelectUF:
 
 agendamento = driver.find_element(By.XPATH, '//*[@id="appointments_consulate_appointment_date"]').click()
 
-disponivel = None
-while disponivel == None:
-    disponivel = pt.locateOnScreen('C:\\Users\\labreu\\Desktop\\dataDisponivel.png', confidence=0.8)
-    driver.find_element(By.XPATH, '/html/body/div[5]/div[2]/div/a/span').click()
-    driver.find_element(By.XPATH, '/html/body/div[5]/div[2]/table/thead/tr/th[1]').click()
-    time.sleep(2)
-
 mesTabela = meses[driver.find_element(By.XPATH, '/html/body/div[5]/div[1]/div/div/span[1]').text]
 anoTabela = int(driver.find_element(By.XPATH, '/html/body/div[5]/div[1]/div/div/span[2]').text)
-print('Ve mes e ano Tabela 1')
+
+print('Procura dias Tabela 1')
+div1 = driver.find_element(By.XPATH, '/html/body/div[5]/div[1]')
+a = div1.find_elements(By.CSS_SELECTOR, 'a.ui-state-default')
+if len(a) == 0:
+                   ## INICIO DO LOOP ##
+    while True:
+        print('Procura dias Tabela 2')
+        div2= driver.find_element(By.XPATH, '/html/body/div[5]/div[2]')
+        a = div2.find_elements(By.CSS_SELECTOR, 'a.ui-state-default')
+        
+        mesTabela = meses[driver.find_element(By.XPATH, '/html/body/div[5]/div[2]/div/div/span[1]').text]
+        anoTabela = int(driver.find_element(By.XPATH, '/html/body/div[5]/div[2]/div/div/span[2]').text)
+        
+        if len(a) == 0:
+            print('Não foi possivel encontrar um agendamento com a data limite solicitada')
+            driver.find_element(By.XPATH, '//*[@id="ui-datepicker-div"]/div[2]/div/a').click()
+            continue
+        else:
+            a[0].click()
+            print(f'ACHEI A DATA {a[0].text}/{mesTabela}/{anoTabela}')
+        break
+else:
+    a[0].click()
+    print(f'ACHEI A DATA {a[0].text}/{mesTabela}/{anoTabela}')
+
+try:
+    print('Encontrando o primeiro horario')
+    horDisponiveis = driver.find_element(By.XPATH, '/html/body/div[4]/main/div[4]/div/div/form/fieldset[1]/ol/fieldset/div/div[2]/div[3]/li[2]/select').click()
+    FirstHour = driver.find_element(By.XPATH, '//*[@id="appointments_consulate_appointment_time"]/option[2]').click()
+    HoursText = driver.find_element(By.XPATH, '//*[@id="appointments_consulate_appointment_time"]/option[2]').get_attribute('text')
+    print(f'Horario encontrado, sua seção sera agendada para o horario {HoursText}')
+except:
+    print('Não foi possivel encontrar um primeiro horario')
+
+  
+# try:
+#     horDisponiveis = driver.find_element(By.XPATH, '/html/body/div[4]/main/div[4]/div/div/form/fieldset[1]/ol/fieldset/div/div[2]/div[3]/li[2]/select').click()
+#     horDisponiveis = driver.find_elements(By.CSS_SELECTOR, '#appointments_consulate_appointment_time > *')
+#     for horas in horDisponiveis:
+#         tempo = horas.text
+#         print(tempo)
+#     if tempo == horario:
+#         horas.click()
+# except:
+    

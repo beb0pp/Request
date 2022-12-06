@@ -19,9 +19,9 @@ meses = {'January' : 1, 'February' : 2, 'March' : 3, 'April' : 4, 'May' : 5, 'Ju
 
 dataMaxima = datetime.strptime(input('Insira uma data:  (formato: yyyy/mm/dd)'), '%Y-%m-%d')
 estado = input('Selecione o Estado que gostaria de realizar a consulta de data: ')
-hora, minutos = input('Selecione o horario que gostaria: ').split(':')
-hora = int(hora)
-minutos = int(minutos)
+# hora, minutos = input('Selecione o horario que gostaria: ').split(':')
+# hora = int(hora)
+# minutos = int(minutos)
 
 chrome_options = Options()
 # chrome_options.add_argument('--headless')
@@ -101,15 +101,13 @@ if (mesTabela <= dataMaxima.month and anoTabela == dataMaxima.year) or (anoTabel
 else:
     print('Não foi possivel encontrar um agendamento com a data limite solicitada')
 
-
-
-
-# try:
-#     horDisponiveis = driver.find_element(By.XPATH, '/html/body/div[4]/main/div[4]/div/div/form/fieldset[1]/ol/fieldset/div/div[2]/div[3]/li[2]/select').click()
-#     horDisponiveis = driver.find_elements(By.CSS_SELECTOR, '#appointments_consulate_appointment_time > *')
-#     for horas in horDisponiveis:
-#         tempo = horas.text
-#         print(tempo)
-#     if tempo == horario:
-#         horas.click()
-# except:
+try:
+    horDisponiveis = driver.find_element(By.XPATH, '/html/body/div[4]/main/div[4]/div/div/form/fieldset[1]/ol/fieldset/div/div[2]/div[3]/li[2]/select').click()
+    horDisponiveis = driver.find_elements(By.CSS_SELECTOR, '#appointments_consulate_appointment_time > *')
+    for horas in horDisponiveis:
+        tempo = horas.text
+        print(tempo)
+    if tempo == horario:
+        horas.click()
+except:
+    
